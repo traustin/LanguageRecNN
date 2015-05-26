@@ -27,9 +27,7 @@ public class DatasetCreator {
             PrintWriter file = new PrintWriter(dir, "UTF-8");
             file.close();
             doc = dir;
-        } catch (FileNotFoundException e) {
-            System.out.println(e.getMessage());
-        } catch (UnsupportedEncodingException e) {
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
@@ -101,7 +99,7 @@ public class DatasetCreator {
                 }
             }
             PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(doc, true)));
-            for (int i = 0; i < letters.length-1; i++) {
+            for (int i = 0; i < letters.length - 1; i++) {
                 out.print(letters[i] + " ");
             }
             out.println(letters[letters.length - 1]);
