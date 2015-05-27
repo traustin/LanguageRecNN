@@ -1,2 +1,2 @@
 # LanguageRecNN
-A neural network that detects the differences between afrikaans and english
+A neural network that detects whether a language is afrikaans or english.
