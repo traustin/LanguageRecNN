@@ -12,7 +12,7 @@ public class Main {
     public static void main(String[] args) {
         BackPropagationAlgorithm algorithm = new BackPropagationAlgorithm(new SigmoidFunction());
         try {
-            algorithm.run(26, "doc.txt", 1);
+            algorithm.run(1, "doc.txt", 1);
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -12,6 +12,10 @@ import java.util.Random;
  */
 public class WeightedNode extends AbstractNode {
     /**
+     *
+     */
+    private double[] previousWeightChange;
+    /**
      * This variable stores the weights for all nodes related to this node.
      */
     private double[] weights;
@@ -41,6 +45,7 @@ public class WeightedNode extends AbstractNode {
 
     /**
      * Returns the bias value
+     *
      * @return Returns the bias Node
      */
     public Node getBias() {
@@ -56,9 +61,9 @@ public class WeightedNode extends AbstractNode {
     public WeightedNode(AbstractNode[] nodes, ActivationFunction activationFunction) {
         this.nodes = nodes;
         this.activationFunction = activationFunction;
-        bias = new Node(-1);
+        bias = new Node(1);
         weights = new double[nodes.length + 1];
-
+        previousWeightChange = new double[nodes.length+1];
         generateWeights();
     }
 
@@ -74,6 +79,7 @@ public class WeightedNode extends AbstractNode {
         for (int i = 0; i < weights.length; i++) {
             Random rand = new Random();
             weights[i] = -1 / (Math.sqrt(fanin)) + ((1 / (Math.sqrt(fanin))) + (1 / (Math.sqrt(fanin)))) * rand.nextDouble();
+            previousWeightChange[i] = 0;
         }
     }
 
@@ -90,6 +96,27 @@ public class WeightedNode extends AbstractNode {
         input = activationFunction.activate(net);
     }
 
+    /**
+     * TODO Comments
+     * @param outSigErr
+     * @param hidSigErr
+     * @return
+     */
+    public double[] getHidSigErr(double outSigErr, double[] hidSigErr) {
+        for (int j = 0; j < nodes.length; j++) {
+                double hidIn = nodes[j].getInput();
+                hidSigErr[j] += outSigErr * weights[j] * (1 - hidIn) * hidIn;
+        }
+        return hidSigErr;
+    }
+
+    public void updateWeights(double learningRate, double errorSignal, double momentum){
+            for(int i = 0; i < weights.length; i++){
+                double previousWeight = -learningRate*errorSignal+momentum*previousWeightChange[i];
+                weights[i] += previousWeight;
+                previousWeightChange[i] = previousWeight;
+            }
+    }
 
 
     /**
