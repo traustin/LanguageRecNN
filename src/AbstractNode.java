@@ -38,11 +38,4 @@ public abstract class AbstractNode {
     public double getInput() {
         return input;
     }
-
-    /**
-     * This will update inputs & other variables that need to be updated.
-     */
-    public void update() {
-        System.out.println("No functionality as of yet");
-    }
 }

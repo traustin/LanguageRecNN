@@ -24,13 +24,27 @@ public class WeightedNode extends AbstractNode {
      */
     ActivationFunction activationFunction;
 
+    /**
+     * TODO Add comment
+     */
+    Node bias;
+
     //TODO Update comments
 
     /**
      * This default constructor returns an error as the constructor cannot implemented correctly at this time.
      */
     public WeightedNode() {
+
         System.out.println("Weights were not set");
+    }
+
+    /**
+     * Returns the bias value
+     * @return Returns the bias Node
+     */
+    public Node getBias() {
+        return bias;
     }
 
     /**
@@ -42,7 +56,9 @@ public class WeightedNode extends AbstractNode {
     public WeightedNode(AbstractNode[] nodes, ActivationFunction activationFunction) {
         this.nodes = nodes;
         this.activationFunction = activationFunction;
-        weights = new double[nodes.length];
+        bias = new Node(-1);
+        weights = new double[nodes.length + 1];
+
         generateWeights();
     }
 
@@ -70,16 +86,11 @@ public class WeightedNode extends AbstractNode {
         for (int i = 0; i < nodes.length; i++) {
             net += nodes[i].getInput() * weights[i];
         }
+        net += bias.getInput() * weights[nodes.length];
         input = activationFunction.activate(net);
     }
 
-    /**
-     * TODO Comment and update
-     */
-    @Override
-    public void update() {
 
-    }
 
     /**
      * TODO Comment

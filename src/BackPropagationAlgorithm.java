@@ -1,5 +1,4 @@
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
@@ -13,8 +12,8 @@ import java.io.IOException;
  */
 public class BackPropagationAlgorithm {
     private Node[] inputNodes;
-    private AbstractNode[] hiddenNodes;
-    private AbstractNode[] outputNodes;
+    private WeightedNode[] hiddenNodes;
+    private WeightedNode[] outputNodes;
     private ActivationFunction activationFunction;
 
     public BackPropagationAlgorithm(ActivationFunction activationFunction) {
@@ -22,7 +21,7 @@ public class BackPropagationAlgorithm {
     }
 
     public void run(int noOfHidNode, String dataset, int maxEpochs) throws IOException {
-        initilizeWeights(noOfHidNode);
+        iniatilizeWeights(noOfHidNode);
         /*-----------------------Initialize all values---------------------------------------------------*/
         double learningRate = 1;
         double momentum = 0;
@@ -60,7 +59,7 @@ public class BackPropagationAlgorithm {
                     }else if(aK < 0.3){
                         aK = 0;
                     }
-
+                    //TODO FROM HERE
 
                     double tK = target;
                     if(j != 0){
@@ -80,19 +79,17 @@ public class BackPropagationAlgorithm {
 
     }
 
-    private void initilizeWeights(int noOfHidNode){
-        inputNodes = new Node[27];
-        //TODO Check if noOfHidNode is not equal to patterns
-        hiddenNodes = new AbstractNode[noOfHidNode + 1];
-        outputNodes = new AbstractNode[2];
-        for (int i = 0; i < inputNodes.length - 1; i++) {
+    private void iniatilizeWeights(int noOfHidNode){
+        inputNodes = new Node[26];
+        //TODO Check if noOfHidNode+1 is not equal to patterns
+        hiddenNodes = new WeightedNode[noOfHidNode];
+        outputNodes = new WeightedNode[2];
+        for (int i = 0; i < inputNodes.length; i++) {
             inputNodes[i] = new Node();
         }
-        inputNodes[inputNodes.length - 1] = new Node(-1);
         for (int i = 0; i < noOfHidNode; i++) {
             hiddenNodes[i] = new WeightedNode(inputNodes, activationFunction);
         }
-        hiddenNodes[noOfHidNode] = new Node(-1);
         for (int i = 0; i < outputNodes.length; i++) {
             outputNodes[i] = new WeightedNode(hiddenNodes, activationFunction);
         }
@@ -105,7 +102,6 @@ public class BackPropagationAlgorithm {
             while(br.readLine() != null){
                 count++;
             }
-
         } catch (java.io.IOException e) {
             e.printStackTrace();
         }
