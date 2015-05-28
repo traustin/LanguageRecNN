@@ -14,6 +14,10 @@ public class Main {
      * @param args This is used to construct the values to passed to the backpropagation algorithm.
      */
     public static void main(String[] args) throws IOException {
+        if(args.length!=5){
+            System.out.println("Incorrect amount of arguments entered\n" +
+                    "Format is: [inputDoc][amountOfHiddenNodes][amountOfEpochs][learningRate][momentum]");
+        }
         DatasetCreator data = new DatasetCreator();
         for(int i = 1; i <= 11; i++){
             data.addEnglishDocument("documents/eng" + i + ".txt");
@@ -25,7 +29,7 @@ public class Main {
 
         BackPropagationAlgorithm algorithm = new BackPropagationAlgorithm(new SigmoidFunction(), "output.csv");
         try {
-            algorithm.run(26, "doc.txt", 40, 0.1, 0.9);
+            algorithm.run(Integer.parseInt(args[1]), args[0], Integer.parseInt(args[2]), Double.parseDouble(args[3]), Double.parseDouble(args[4]));
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }

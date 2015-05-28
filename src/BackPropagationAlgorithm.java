@@ -1,7 +1,6 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.io.IOException;
 
 /**
  * <h1>The Backpropagation Learning Algorithm</h1>
