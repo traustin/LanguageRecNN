@@ -90,6 +90,9 @@ public class DatasetCreator {
         return letters;
     }
 
+    /**
+     *
+     */
     public void shuffle(){
         try {
             BufferedReader br = new BufferedReader(new FileReader(doc));
@@ -156,7 +159,6 @@ public class DatasetCreator {
             e.printStackTrace();
         }
     }
-
 
     /**
      * This will get rid of all diacritical marks within a string.

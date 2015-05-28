@@ -1,4 +1,3 @@
-import java.io.FileWriter;
 import java.io.IOException;
 
 /**
@@ -15,14 +14,14 @@ public class Main {
      * @param args This is used to construct the values to passed to the backpropagation algorithm.
      */
     public static void main(String[] args) throws IOException {
-        /*DatasetCreator data = new DatasetCreator();
+        DatasetCreator data = new DatasetCreator();
         for(int i = 1; i <= 11; i++){
             data.addEnglishDocument("documents/eng" + i + ".txt");
         }
         for(int i = 1; i <= 11; i++){
             data.addAfrikaansDocument("documents/afr" + i + ".txt");
         }
-        data.shuffle();*/
+        data.shuffle();
 
         BackPropagationAlgorithm algorithm = new BackPropagationAlgorithm(new SigmoidFunction(), "output.csv");
         try {
