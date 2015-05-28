@@ -1,5 +1,6 @@
 import java.io.*;
 import java.text.Normalizer;
+import java.util.Random;
 import java.util.regex.Pattern;
 
 /**
@@ -49,7 +50,7 @@ public class DatasetCreator {
      * @param directory This is the directory of the file being processed
      */
     public void addAfrikaansDocument(String directory) {
-        int[] letterCount = new int[27];
+        double[] letterCount = new double[27];
         for (int i = 0; i < letterCount.length; i++)
             letterCount[i] = 0;
         addDocument(directory, letterCount);
@@ -63,11 +64,57 @@ public class DatasetCreator {
      * @param directory This is the directory of the file being processed
      */
     public void addEnglishDocument(String directory) {
-        int[] letterCount = new int[27];
+        double[] letterCount = new double[27];
         for (int i = 0; i < letterCount.length - 1; i++)
             letterCount[i] = 0;
         letterCount[26] = 1;
         addDocument(directory, letterCount);
+    }
+
+    /**
+     *
+     * @param letters
+     * @return
+     */
+    private double[] scale(double [] letters){
+        double maxFreq = 0, minFreq = 1;
+        for(int i = 0; i <  letters.length-1; i++){
+            if(letters[i]> maxFreq)
+                maxFreq = letters[i];
+            if(letters[i]<minFreq)
+                minFreq = letters[i];
+        }
+        for(int i = 0; i < letters.length-1; i++){
+            letters[i] = (letters[i]-minFreq)/(maxFreq-minFreq) * (Math.sqrt(3) - (-Math.sqrt(3))) + (-Math.sqrt(3));
+        }
+        return letters;
+    }
+
+    public void shuffle(){
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(doc));
+            String temp;
+            String s = "";
+            while ((temp = br.readLine()) != null) {
+                s += temp + "\n";
+            }
+            br.close();
+            String [] sArr = s.split("\n");
+            for(int i = 0; i < sArr.length-1; i++){
+                Random rand = new Random();
+                int j = rand.nextInt((sArr.length));
+                temp = sArr[i];
+                sArr[i] = sArr[j];
+                sArr[j] = temp;
+            }
+            PrintWriter file = new PrintWriter(doc, "UTF-8");
+            for(String a: sArr){
+                file.println(a);
+            }
+            file.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -78,7 +125,7 @@ public class DatasetCreator {
      * @param directory This is the directory of the file being processed
      * @param letters   This is the integer array used to store the count of each character.
      */
-    private void addDocument(String directory, int[] letters) {
+    private void addDocument(String directory, double[] letters) {
         try {
             BufferedReader br = new BufferedReader(new FileReader(directory));
             String s = "";
@@ -86,20 +133,20 @@ public class DatasetCreator {
             while ((temp = br.readLine()) != null) {
                 s += temp;
             }
-            System.out.println("Before deaccent");
-            System.out.println(s);
             s = deAccent(s);
-            System.out.println("After deaccent");
-            System.out.println(s);
             s = s.toUpperCase();
+            int totalLetters = 0;
             for (int i = 0; i < s.length(); i++) {
                 if (Character.isLetter(s.charAt(i))) {
                     int num = (int) s.charAt(i) - 65;
                     letters[num]++;
+                    totalLetters++;
                 }
             }
             PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(doc, true)));
             for (int i = 0; i < letters.length - 1; i++) {
+                letters[i] = letters[i]/totalLetters;
+                letters = scale(letters);
                 out.print(letters[i] + " ");
             }
             out.println(letters[letters.length - 1]);

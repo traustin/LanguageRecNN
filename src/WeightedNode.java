@@ -61,7 +61,7 @@ public class WeightedNode extends AbstractNode {
     public WeightedNode(AbstractNode[] nodes, ActivationFunction activationFunction) {
         this.nodes = nodes;
         this.activationFunction = activationFunction;
-        bias = new Node(1);
+        bias = new Node(-1);
         weights = new double[nodes.length + 1];
         previousWeightChange = new double[nodes.length+1];
         generateWeights();
@@ -77,10 +77,17 @@ public class WeightedNode extends AbstractNode {
             return;
         double fanin = weights.length;
         for (int i = 0; i < weights.length; i++) {
-            Random rand = new Random();
-            weights[i] = -1 / (Math.sqrt(fanin)) + ((1 / (Math.sqrt(fanin))) + (1 / (Math.sqrt(fanin)))) * rand.nextDouble();
+            weights[i] =  doubleRandomInclusive(1/Math.sqrt(weights.length), -1/Math.sqrt(weights.length));
             previousWeightChange[i] = 0;
         }
+    }
+
+    private double doubleRandomInclusive(double max, double min) {
+        double r = Math.random();
+        if (r < 0.5) {
+            return ((1 - Math.random()) * (max - min) + min);
+        }
+        return (Math.random() * (max - min) + min);
     }
 
     /**
@@ -103,6 +110,7 @@ public class WeightedNode extends AbstractNode {
      * @return
      */
     public double[] getHidSigErr(double outSigErr, double[] hidSigErr) {
+
         for (int j = 0; j < nodes.length; j++) {
                 double hidIn = nodes[j].getInput();
                 hidSigErr[j] += outSigErr * weights[j] * (1 - hidIn) * hidIn;
@@ -112,9 +120,16 @@ public class WeightedNode extends AbstractNode {
 
     public void updateWeights(double learningRate, double errorSignal, double momentum){
             for(int i = 0; i < weights.length; i++){
-                double previousWeight = -learningRate*errorSignal+momentum*previousWeightChange[i];
-                weights[i] += previousWeight;
-                previousWeightChange[i] = previousWeight;
+                if(i<weights.length-1){
+                    double previousWeight = -learningRate*errorSignal*nodes[i].getInput()+momentum*previousWeightChange[i];
+                    weights[i] += previousWeight;
+                    previousWeightChange[i] = previousWeight;
+                }else{
+                    double previousWeight = -learningRate*errorSignal*bias.getInput()+momentum*previousWeightChange[i];
+                    weights[i] += previousWeight;
+                    previousWeightChange[i] = previousWeight;
+                }
+
             }
     }
 

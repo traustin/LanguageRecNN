@@ -1,0 +1,5 @@
+Die voorloper tot die Internet was ARPANET – ’n netwerk van militêre netwerke, en later ook universiteitsnetwerke, wat in 1969 in die VSA ontstaan het. Op 1 Januarie 1983 het ARPANET oorgeskakel van die ou NCP-protokol na TCP/IP en so die weg gebaan vir die ontstaan van die moderne Internet.
+
+Dit was egter eers in die negentigerjare dat die publiek die Internet "ontdek" het. In Augustus 1991 het Tim Berners-Lee en Robert Cailliau die World Wide Web-projek gepubliseer nadat hulle ’n paar jaar aan HTTP en HTML gewerk het. Die eerste webbladsye het verskyn by CERN in Switserland, waar hulle albei gewerk het.
+
+Met die uitvinding van bladsye wat aan mekaar verbind word deur klikbare skakels (HTML/WWW) het Tim Berners-Lee die Internet inderwaarheid vir die groot publiek beskikbaar gestel. Hy word dus beskou as die uitvinder/grondlegger van die huidige Internet.

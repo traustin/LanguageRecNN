@@ -11,6 +11,6 @@ public class SigmoidFunction implements ActivationFunction {
      */
     @Override
     public double activate(double net) {
-        return 1 / (1 + Math.exp(-net));
+        return (1 / (1 + Math.exp(-net)));
     }
 }

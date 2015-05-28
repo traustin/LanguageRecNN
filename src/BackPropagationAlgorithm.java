@@ -1,5 +1,6 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 
 /**
@@ -15,20 +16,25 @@ public class BackPropagationAlgorithm {
     private WeightedNode[] hiddenNodes;
     private WeightedNode[] outputNodes;
     private ActivationFunction activationFunction;
+    private String outputFile;
 
-    public BackPropagationAlgorithm(ActivationFunction activationFunction) {
+    public BackPropagationAlgorithm(ActivationFunction activationFunction, String outputFile) {
         this.activationFunction = activationFunction;
+        this.outputFile = outputFile;
     }
 
-    public void run(int noOfHidNode, String dataset, int maxEpochs) throws IOException {
-        iniatilizeWeights(noOfHidNode);
-        /*-----------------------Initialize all values---------------------------------------------------*/
-        double learningRate = 0.01;
-        double momentum = 0.98;
-        double epochs = 0;
+    public void run(int noOfHidNode, String dataset, int maxEpochs, double learningRate, double momentum) throws Exception {
         int nOfPatt = calculateLines(dataset);
+        if(noOfHidNode==nOfPatt){
+            throw new Exception("Error: amount of patterns equals the amount of hidden nodes");
+        }
+        iniatilizeWeights(noOfHidNode);
+        FileWriter output = new FileWriter(outputFile);
+        output.append("Epochs,TrainingAccuracy,GeneralizationAccuracy\n");
+        /*-----------------------Initialize all values---------------------------------------------------*/
+        int epochs = 0;
+
         int trainSet = nOfPatt * 8 / 10;
-        int testSet = nOfPatt * 2 / 10;
 
         /*--------------------Repeat until maximum epochs-----------------------------------------------*/
         while (epochs < maxEpochs) {
@@ -41,13 +47,13 @@ public class BackPropagationAlgorithm {
             for (int i = 0; i < trainSet; i++) {
                 String[] s = br.readLine().split(" ");
                 for (int j = 0; j < s.length - 1; j++) {
-                    inputNodes[j].setInput(Integer.parseInt(s[j]));
+                    inputNodes[j].setInput(Double.parseDouble(s[j]));
                 }
                 /*Target output*/
-                int target = Integer.parseInt(s[s.length - 1]);
+                int target = (int) Double.parseDouble(s[s.length - 1]);
                 /*Net input & activation function for each hiddenNode*/
-                for (int j = 0; j < hiddenNodes.length; j++) {
-                    hiddenNodes[j].getInput();
+                for (WeightedNode node : hiddenNodes) {
+                    node.getInput();
                 }
                 /*Accuracy value to determine how accurate */
                 int accuracy = 1;
@@ -73,7 +79,7 @@ public class BackPropagationAlgorithm {
                         accuracy = 0;
                     }
                     //Calculate error signal for each output
-                    errSigOut[j] = -(tK - oK) * (1 - oK) * oK;
+                    errSigOut[j] = (-(tK - oK)) * (1 - oK) * oK;
                     //Calculate error signal for each hidden input
                     errSigHid = outputNodes[j].getHidSigErr(errSigOut[j], errSigHid);
                 }
@@ -83,22 +89,22 @@ public class BackPropagationAlgorithm {
                     outputNodes[j].updateWeights(learningRate, errSigOut[j], momentum);
                 }
                 //Calculate new weights for input-to-hidden weights
-                for (int j = 0; j < hiddenNodes.length; j++){
+                for (int j = 0; j < hiddenNodes.length; j++) {
                     hiddenNodes[j].updateWeights(learningRate, errSigHid[j], momentum);
                 }
             }
-            AT = AT/trainSet * 100;
+            AT = AT / trainSet * 100;
             double AG = 0;
-            for(int i = trainSet; i < testSet; i++){
+            for (int i = trainSet; i < nOfPatt; i++) {
                 String[] s = br.readLine().split(" ");
                 for (int j = 0; j < s.length - 1; j++) {
-                    inputNodes[j].setInput(Integer.parseInt(s[j]));
+                    inputNodes[j].setInput(Double.parseDouble(s[j]));
                 }
                 /*Target output*/
-                int target = Integer.parseInt(s[s.length - 1]);
+                int target = (int) Double.parseDouble(s[s.length - 1]);
 
-                for (int j = 0; j < hiddenNodes.length; j++) {
-                    hiddenNodes[j].getInput();
+                for (WeightedNode node: hiddenNodes) {
+                    node.getInput();
                 }
 
                 int accuracy = 1;
@@ -123,11 +129,13 @@ public class BackPropagationAlgorithm {
                 }
                 AG += accuracy;
             }
-            AG = AG/(nOfPatt-testSet)*100;
-            System.out.println("Epoch Number: " + epochs + "%\tTraining Accuracy: " + AT + "%\tGeneralization Accuracy: " + AG + "%" );
+            br.close();
+            AG = AG / (nOfPatt - trainSet) * 100;
+            System.out.println("Epoch Number: " + epochs + "\tTraining Accuracy: " + AT + "%\tGeneralization Accuracy: " + AG + "%");
+            output.append(epochs + "," + AT + "," + AG + "\n");
         }
-
-
+        output.flush();
+        output.close();
     }
 
     private void iniatilizeWeights(int noOfHidNode) {
