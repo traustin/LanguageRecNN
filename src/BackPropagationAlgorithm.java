@@ -24,7 +24,7 @@ public class BackPropagationAlgorithm {
         iniatilizeWeights(noOfHidNode);
         /*-----------------------Initialize all values---------------------------------------------------*/
         double learningRate = 0.01;
-        double momentum = 0;
+        double momentum = 0.98;
         double epochs = 0;
         int nOfPatt = calculateLines(dataset);
         int trainSet = nOfPatt * 8 / 10;
@@ -55,7 +55,8 @@ public class BackPropagationAlgorithm {
                 double errSigHid[] = new double[hiddenNodes.length];
                 for (int j = 0; j < outputNodes.length; j++) {
                     /**/
-                    double aK = outputNodes[j].getInput();
+                    double oK = outputNodes[j].getInput();
+                    double aK = oK;
                     if (aK > 0.7) {
                         aK = 1;
                     } else if (aK < 0.3) {
@@ -72,7 +73,7 @@ public class BackPropagationAlgorithm {
                         accuracy = 0;
                     }
                     //Calculate error signal for each output
-                    errSigOut[j] = -(tK - aK) * (1 - aK) * aK;
+                    errSigOut[j] = -(tK - oK) * (1 - oK) * oK;
                     //Calculate error signal for each hidden input
                     errSigHid = outputNodes[j].getHidSigErr(errSigOut[j], errSigHid);
                 }
